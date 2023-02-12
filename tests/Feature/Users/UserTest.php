@@ -14,12 +14,14 @@ class UserTest extends TestCase
     /** @test */
     public function user_page_can_be_render()
     {
+        $tester = User::factory()->create();
+
         $user = User::factory()->create();
 
         $this->actingAs($user);
 
         $response = $this->get('/users')
-        ->assertSee('gbelot2003@hotmail.com')
+        ->assertSee($tester->email)
         ->assertOk();
     }
 }
