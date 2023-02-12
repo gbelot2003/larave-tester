@@ -19,6 +19,8 @@ class UserTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->get('/users')
+        ->assertSee('asdasdas')
+        ->assertSee('gbelot2003@hotmail.com')
         ->assertOk();
     }
 }
