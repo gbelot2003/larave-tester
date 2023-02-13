@@ -15,6 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        // TODO: move this logic to a service
         $users = User::query()
         ->when(Request::input('search'), function ($query, $search){
             $query->where('name', 'LIKE', "%{$search}%");
@@ -30,7 +31,6 @@ class UserController extends Controller
             'status' => $users->status,
             'role' => $users->roles[0]->name
         ]);
-
 
         return Inertia::render('Users/Index', [
             'users' => $users
