@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
+use Request;
 
 class UserController extends Controller
 {
@@ -15,10 +15,27 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::query()
+        ->when(Request::input('search'), function ($query, $search){
+            $query->where('name', 'LIKE', "%{$search}%");
+        })
+        ->with('roles')
+        ->orderBy('id', 'DESC')
+        ->paginate(10)
+        ->withQueryString()
+        ->through(fn($users) => [
+            'id' => $users->id,
+            'name' => $users->name,
+            'email' => $users->email,
+            'status' => $users->status,
+            'role' => $users->roles[0]->name
+        ]);
+
+
         return Inertia::render('Users/Index', [
             'users' => $users
         ]);
+
     }
 
     /**
